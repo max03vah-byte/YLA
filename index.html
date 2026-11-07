@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для Ули ❤️</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden;
+    padding: 16px;
+  }
+
+  .card {
+    background: #1a1a1a;
+    border: 2px solid #ff69b4;
+    border-radius: 24px;
+    padding: 40px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(255,105,180,.25);
+  }
+
+  .heart-icon {
+    font-size: 56px;
+    margin-bottom: 8px;
+    display: inline-block;
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse { 50% { transform: scale(1.15); } }
+
+  h1 { color: #ff69b4; font-size: 28px; margin-bottom: 16px; }
+
+  .message { color: #e0e0e0; font-size: 17px; line-height: 1.6; margin-bottom: 12px; }
+  .message .highlight { color: #ff69b4; font-weight: 600; }
+
+  .apology { color: #b0b0b0; font-size: 14px; font-style: italic; margin-bottom: 28px; line-height: 1.5; }
+
+  .divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #ff69b4, transparent); margin: 0 auto 28px; }
+
+  .question { color: #fff; font-size: 22px; font-weight: 600; margin-bottom: 24px; }
+  .question span { color: #ff69b4; }
+
+  /* Контейнер для кнопок — фиксированная высота, relative */
+  .buttons {
+    position: relative;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  button {
+    border: none;
+    border-radius: 50px;
+    padding: 14px 36px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 1px;
+  }
+
+  .btn-yes {
+    background: #ff69b4;
+    color: #0a0a0a;
+    box-shadow: 0 0 20px rgba(255,105,180,.5);
+    transition: transform .15s, background .2s;
+  }
+  .btn-yes:hover { background: #ff8dc6; transform: scale(1.06); }
+
+  /* Кнопка "Нет" — absolute, двигается через left/top */
+  .btn-no {
+    position: absolute;
+    background: #2a2a2a;
+    color: #ff69b4;
+    border: 2px solid #ff69b4;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: left .25s ease, top .25s ease;
+    white-space: nowrap;
+  }
+
+  .hint { margin-top: 16px; font-size: 13px; color: #555; min-height: 18px; }
+
+  .success-message {
+    display: none;
+    color: #ff69b4;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 16px;
+  }
+
+  .final-state .btn-no { display: none; }
+  .final-state .btn-yes { animation: glow 1.2s ease-in-out infinite alternate; }
+  .final-state .success-message { display: block; }
+  @keyframes glow {
+    from { box-shadow: 0 0 20px rgba(255,105,180,.5); }
+    to   { box-shadow: 0 0 50px rgba(255,105,180,1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <div class="heart-icon">💗</div>
+  <h1>Уля, это для тебя</h1>
+
+  <p class="message">Я <span class="highlight">очень люблю тебя</span> и никогда не хотел тебя обидеть.</p>
+  <p class="apology">Если что-то было не так — прости меня, пожалуйста. Ты для меня очень важна.</p>
+
+  <div class="divider"></div>
+
+  <p class="question">Ты меня <span>любишь?</span></p>
+
+  <div class="buttons" id="buttons">
+    <button class="btn-yes" id="btnYes">Да</button>
+    <button class="btn-no"  id="btnNo">Нет</button>
+  </div>
+
+  <p class="hint" id="hint"></p>
+  <p class="success-message" id="successMsg">Я знал ❤️ Спасибо, Уля!</p>
+</div>
+
+<script>
+(function () {
+  const btnNo   = document.getElementById('btnNo');
+  const btnYes  = document.getElementById('btnYes');
+  const card    = document.getElementById('card');
+  const hint    = document.getElementById('hint');
+  const box     = document.getElementById('buttons'); // контейнер
+
+  // ---- фон: сердечки ----
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.textContent = '❤';
+    p.style.cssText = `position:fixed;color:#ff69b4;opacity:.15;pointer-events:none;
+      left:${Math.random()*100}vw;font-size:${12+Math.random()*24}px;
+      animation:floatUp ${8+Math.random()*14}s linear ${Math.random()*10}s infinite;`;
+    document.body.appendChild(p);
+  }
+  const style = document.createElement('style');
+  style.textContent = `@keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0); opacity:0; }
+    10%{ opacity:.2; }
+    90%{ opacity:.2; }
+    100%{ transform: translateY(-10vh) rotate(360deg); opacity:0; }
+  }`;
+  document.head.appendChild(style);
+
+  // ---- убегающая "Нет" ----
+  let noCount = 0;
+  const hints = [
+    '',
+    'Попробуй ещё раз 🙂',
+    'Не так быстро 😏',
+    'Кнопка убегает...',
+    'Может, всё-таки «Да»?',
+    'Ну пожалуйста...',
+    'Ты уверена?',
+    'Я не сдамся 💪',
+    'Уля, подумай ещё раз ❤️',
+    'Кнопка «Нет» сломалась 😅',
+    'Ладно, она устала бегать...'
+  ];
+
+  function flee() {
+    // размеры контейнера и кнопки
+    const boxRect = box.getBoundingClientRect();
+    const btnRect = btnNo.getBoundingClientRect();
+
+    // максимум, куда можно сместить left/top (в px, относительно контейнера)
+    const maxLeft = Math.max(0, boxRect.width  - btnRect.width);
+    const maxTop  = Math.max(0, boxRect.height - btnRect.height);
+
+    // новая позиция в px (левый верхний угол кнопки относительно контейнера)
+    const newLeft = Math.random() * maxLeft;
+    const newTop  = Math.random() * maxTop;
+
+    // ставим left/top, но transform:-50% смещает центр — нужно скорректировать.
+    // Проще: убираем translate и позиционируем по левому верхнему углу.
+    btnNo.style.transform = 'none';
+    btnNo.style.left = newLeft + 'px';
+    btnNo.style.top  = newTop  + 'px';
+
+    // подсказки
+    noCount++;
+    if (noCount < hints.length) hint.textContent = hints[noCount];
+    else hint.textContent = 'Кнопка «Нет» окончательно сбежала 🏃‍♀️💨';
+    hint.style.color = '#ff69b4';
+  }
+
+  // стартовое положение "Нет" — справа от "Да"
+  window.addEventListener('load', () => {
+    const boxRect = box.getBoundingClientRect();
+    const btnRect = btnNo.getBoundingClientRect();
+    // ставим справа от "Да" с отступом
+    const yesRect = btnYes.getBoundingClientRect();
+    const startLeft = Math.min(boxRect.width - btnRect.width, yesRect.right - boxRect.left + 20);
+    btnNo.style.transform = 'none';
+    btnNo.style.left = startLeft + 'px';
+    btnNo.style.top  = ((boxRect.height - btnRect.height) / 2) + 'px';
+  });
+
+  // события: мышь, тач, клик
+  btnNo.addEventListener('mouseenter', flee);
+  btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); flee(); }, { passive:false });
+  btnNo.addEventListener('click',      (e) => { e.preventDefault(); flee(); });
+
+  // "Да"
+  btnYes.addEventListener('click', () => {
+    card.classList.add('final-state');
+    hint.textContent = '';
+    if (navigator.vibrate) navigator.vibrate(50);
+  });
+
+  // при ресайзе, если кнопка улетела — вернуть в пределы
+  window.addEventListener('resize', () => {
+    if (card.classList.contains('final-state')) return;
+    const boxRect = box.getBoundingClientRect();
+    const btnRect = btnNo.getBoundingClientRect();
+    if (btnRect.left - boxRect.left > boxRect.width - btnRect.width) {
+      btnNo.style.left = '0px';
+      btnNo.style.top  = '0px';
+    }
+  });
+})();
+</script>
+</body>
+</html>
