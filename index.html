@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Уля, это тебе</title>
+<title>Уля, прости меня</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -21,18 +21,19 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,sans-serif}
 body{
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;position:relative;
+  display:flex;justify-content:center;
+  overflow-x:hidden;overflow-y:auto;position:relative;
   background:radial-gradient(60vmax 60vmax at 50% 38%,rgba(255,61,139,.22),transparent 60%),var(--bg);
 }
-main{width:min(560px,100%);padding:24px;text-align:center;position:relative;z-index:2}
+main{width:min(560px,100%);padding:32px 24px;margin:auto;text-align:center;position:relative;z-index:2}
 h1{
   font-family:"Marck Script","Segoe Script",cursive;
   font-weight:400;font-size:clamp(46px,13vw,92px);line-height:1.05;margin:0 0 18px;
   color:var(--pink);text-shadow:0 0 28px rgba(255,61,139,.55);
 }
 .lead{font-size:clamp(16px,4.2vw,19px);line-height:1.6;color:var(--ink);margin:0 auto 10px;max-width:46ch}
-.sorry{font-size:15px;line-height:1.6;color:var(--muted);margin:0 auto 38px;max-width:46ch}
+.sorry{font-size:clamp(16px,4.2vw,19px);line-height:1.6;color:var(--ink);margin:0 auto 14px;max-width:46ch}
+.sorry.last{color:var(--pink-soft);margin-bottom:38px}
 .q{font-family:"Marck Script","Segoe Script",cursive;font-size:clamp(30px,8vw,44px);margin:0 0 22px;color:var(--pink-soft)}
 .buttons{display:flex;gap:16px;justify-content:center;align-items:center;min-height:64px}
 button{
@@ -46,10 +47,14 @@ button:focus-visible{outline:3px solid var(--pink-soft);outline-offset:3px}
 #no.run{position:fixed;z-index:5}
 .hint{margin-top:18px;min-height:22px;font-size:14px;color:var(--muted)}
 #win{display:none}
-#win h2{font-family:"Marck Script","Segoe Script",cursive;font-weight:400;font-size:clamp(44px,12vw,80px);line-height:1.1;margin:0 0 14px;color:var(--pink);text-shadow:0 0 28px rgba(255,61,139,.55)}
-#win p{font-size:18px;line-height:1.6;margin:0}
+#win h2,#soft h2{font-family:"Marck Script","Segoe Script",cursive;font-weight:400;font-size:clamp(44px,12vw,80px);line-height:1.1;margin:0 0 14px;color:var(--pink);text-shadow:0 0 28px rgba(255,61,139,.55)}
+#win p,#soft p{font-size:18px;line-height:1.6;margin:0 auto;max-width:46ch}
 .done #ask{display:none}
 .done #win{display:block}
+#soft{display:none}
+.soft #ask{display:none}
+.soft #soft{display:block}
+#back{margin-top:26px;background:transparent;color:var(--pink-soft)}
 .heart{position:fixed;bottom:-40px;z-index:1;color:var(--pink);pointer-events:none;animation:up linear forwards}
 @keyframes up{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
 @media (prefers-reduced-motion:reduce){.heart{display:none}button{transition:none}}
@@ -58,10 +63,12 @@ button:focus-visible{outline:3px solid var(--pink-soft);outline-offset:3px}
 <body>
 <main>
   <section id="ask">
-    <h1>Уля</h1>
-    <p class="lead">Я люблю тебя. Просто хотел, чтобы ты это знала, и чтобы это было написано не в спешке, а для тебя одной.</p>
-    <p class="sorry">И если я когда-то случайно тебя обидел, то совсем не хотел этого. Ты мне очень дорога.</p>
-    <p class="q">Ты меня любишь?</p>
+    <h1>Прости меня, Уля</h1>
+    <p class="lead">Прости меня. Правда, прости. Мне безумно жаль, что я тебя обидел, и я очень переживаю из-за этого.</p>
+    <p class="sorry">Я совсем не хотел делать тебе больно. Мне невыносимо думать, что тебе плохо из-за меня.</p>
+    <p class="sorry">Ты очень дорога мне. Я всё понимаю и обещаю быть внимательнее, добрее и лучше.</p>
+    <p class="sorry last">Я люблю тебя. Прости, пожалуйста, ещё раз и ещё тысячу раз.</p>
+    <p class="q">Ты меня любишь и прощаешь?</p>
     <div class="buttons">
       <button id="yes" type="button">Да</button>
       <button id="no" type="button">Нет</button>
@@ -69,8 +76,13 @@ button:focus-visible{outline:3px solid var(--pink-soft);outline-offset:3px}
     <div class="hint" id="hint" aria-live="polite"></div>
   </section>
   <section id="win" aria-live="polite">
-    <h2>Я знал!</h2>
-    <p>Люблю тебя, Уля.</p>
+    <h2>Спасибо, что простила!</h2>
+    <p>Люблю тебя, Уля. Я буду стараться ещё сильнее.</p>
+  </section>
+  <section id="soft" aria-live="polite">
+    <h2>Хорошо, Уля</h2>
+    <p>Я понимаю тебя, и это нормально. Я не обижусь и не буду торопить. Тебе нужно столько времени, сколько нужно. Я буду рядом, когда захочешь поговорить. И я всё равно люблю тебя.</p>
+    <button id="back" type="button">Вернуться назад</button>
   </section>
 </main>
 <script>
@@ -99,9 +111,8 @@ button:focus-visible{outline:3px solid var(--pink-soft);outline-offset:3px}
     yes.style.transform='scale('+scale+')';
   }
 
-  ['pointerenter','pointerdown','touchstart','focus','click'].forEach(function(ev){
-    no.addEventListener(ev,flee,{passive:false});
-  });
+  no.addEventListener('click',function(){document.body.classList.add('soft')});
+  document.getElementById('back').addEventListener('click',function(){document.body.classList.remove('soft')});
 
   function hearts(){
     for(var i=0;i<46;i++){
